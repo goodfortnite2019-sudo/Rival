@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1280px; height: 800px; background: #0a0a0d; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; overflow: hidden; display: flex; }
+  /* Email client chrome */
+  .client { width: 260px; border-right: 1px solid rgba(255,255,255,0.06); background: #050507; flex-shrink: 0; }
+  .client-header { padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .client-title { font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 12px; }
+  .client-search { height: 28px; border-radius: 7px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; padding: 0 10px; gap: 6px; }
+  .email-row { padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); cursor: default; }
+  .email-row.active { background: rgba(16,185,129,0.06); border-left: 2px solid #10b981; }
+  .email-from { font-size: 11px; font-weight: 600; color: #e4e4e7; margin-bottom: 3px; }
+  .email-subject { font-size: 11px; color: #71717a; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .email-time { font-size: 10px; color: #3f3f46; float: right; }
+  /* Email preview */
+  .preview { flex: 1; overflow: hidden; }
+  .preview-header { height: 48px; border-bottom: 1px solid rgba(255,255,255,0.06); background: #080809; display: flex; align-items: center; padding: 0 20px; gap: 12px; }
+  .preview-body { padding: 0 0 0 24px; height: calc(800px - 48px); overflow: hidden; display: flex; flex-direction: column; }
+  .email-meta { padding: 20px 20px 16px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .email-subject-big { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+  .email-from-big { font-size: 12px; color: #52525b; }
+  .email-content { flex: 1; overflow: hidden; padding: 20px 20px 0 0; }
+  /* Email body styles */
+  .e-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+  .e-logo { font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+  .e-tag { font-size: 10px; color: #71717a; text-transform: uppercase; letter-spacing: 2px; }
+  .e-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+  .e-stat { background: #111113; border: 1px solid #27272a; border-radius: 10px; padding: 14px; }
+  .e-stat-label { font-size: 11px; color: #52525b; margin-bottom: 4px; }
+  .e-stat-value { font-size: 26px; font-weight: 700; line-height: 1; }
+  .e-section { background: #111113; border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+  .e-section-tag { font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 4px; display: inline-block; margin-bottom: 8px; }
+  .e-section-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+  .e-section-body { font-size: 12px; color: #71717a; line-height: 1.7; }
+  .e-section-body strong { color: #e4e4e7; }
+  .e-cta { display: flex; gap: 10px; margin-top: 16px; }
+  .e-btn { padding: 9px 18px; border-radius: 8px; font-size: 12px; font-weight: 600; }
+  .e-takeaways { background: rgba(16,185,129,0.05); border: 1px solid rgba(16,185,129,0.2); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+  .e-takeaways-title { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: #10b981; margin-bottom: 10px; text-transform: uppercase; }
+  .e-takeaway { font-size: 12px; color: #a1a1aa; padding: 4px 0; line-height: 1.6; }
+  .e-takeaway:before { content: '→ '; color: #10b981; }
+</style>
+</head>
+<body>
+
+<!-- Email client sidebar -->
+<div class="client">
+  <div class="client-header">
+    <div class="client-title">Inbox</div>
+    <div class="client-search">
+      <span style="font-size:10px;color:#3f3f46;">🔍</span>
+      <span style="font-size:11px;color:#27272a;">Search...</span>
+    </div>
+  </div>
+
+  <div class="email-row active">
+    <span class="email-time">Mon 8:02</span>
+    <div class="email-from">briefings@getrival.eu</div>
+    <div class="email-subject">Rival: 5 competitor moves detected</div>
+  </div>
+  <div class="email-row">
+    <span class="email-time">Sun 14:31</span>
+    <div class="email-from" style="color:#52525b;font-weight:400;">Product Hunt</div>
+    <div class="email-subject" style="color:#3f3f46;">Your submission is live</div>
+  </div>
+  <div class="email-row">
+    <span class="email-time">Sat 09:15</span>
+    <div class="email-from" style="color:#52525b;font-weight:400;">Stripe</div>
+    <div class="email-subject" style="color:#3f3f46;">New payment received €29</div>
+  </div>
+  <div class="email-row">
+    <span class="email-time">Fri 18:44</span>
+    <div class="email-from" style="color:#52525b;font-weight:400;">briefings@getrival.eu</div>
+    <div class="email-subject" style="color:#3f3f46;">⚡ Alert: Notion pricing change</div>
+  </div>
+  <div class="email-row">
+    <span class="email-time">Thu 11:22</span>
+    <div class="email-from" style="color:#52525b;font-weight:400;">AppSumo</div>
+    <div class="email-subject" style="color:#3f3f46;">Your deal is live! 🎉</div>
+  </div>
+</div>
+
+<!-- Email preview -->
+<div class="preview">
+  <div class="preview-header">
+    <div style="display:flex;gap:6px;">
+      <div style="padding:5px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);font-size:11px;color:#52525b;">← Back</div>
+      <div style="padding:5px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);font-size:11px;color:#52525b;">Archive</div>
+    </div>
+  </div>
+
+  <div class="preview-body">
+    <div class="email-meta">
+      <div class="email-subject-big">Rival: 5 competitor moves detected — week of June 29</div>
+      <div class="email-from-big">From: briefings@getrival.eu · Monday 8:02 AM · To: joe@yourstartup.com</div>
+    </div>
+
+    <div class="email-content">
+      <div class="e-header">
+        <span class="e-logo">Rival</span>
+        <span class="e-tag">Weekly Intelligence Briefing</span>
+        <div style="margin-left:auto;font-size:11px;color:#52525b;">June 23–29, 2026</div>
+      </div>
+
+      <div class="e-stats">
+        <div class="e-stat">
+          <div class="e-stat-label">Competitors</div>
+          <div class="e-stat-value" style="color:#fff;">5</div>
+        </div>
+        <div class="e-stat">
+          <div class="e-stat-label">Changes detected</div>
+          <div class="e-stat-value" style="color:#10b981;">5</div>
+        </div>
+        <div class="e-stat">
+          <div class="e-stat-label">High priority</div>
+          <div class="e-stat-value" style="color:#ef4444;">3</div>
+        </div>
+      </div>
+
+      <div class="e-takeaways">
+        <div class="e-takeaways-title">Key Takeaways — Generated by Claude AI</div>
+        <div class="e-takeaway">Notion's 50% price hike opens the SMB market — target churned users with aggressive free tier messaging this week.</div>
+        <div class="e-takeaway">Linear's enterprise push means less focus on startups — position Rival as the "built for founders" alternative.</div>
+        <div class="e-takeaway">Figma removing Starter creates urgency — run "Figma alternative" ads now, intent is at peak.</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="e-section">
+          <span class="e-section-tag" style="background:rgba(245,158,11,0.12);color:#f59e0b;">💰 PRICING CHANGE</span>
+          <div class="e-section-title">Notion raised Plus to €12</div>
+          <div class="e-section-body">Plus plan up 50%. Free tier storage cut. <strong>Clear upmarket move.</strong> They're pricing out individual users to focus on teams.</div>
+        </div>
+        <div class="e-section">
+          <span class="e-section-tag" style="background:rgba(16,185,129,0.1);color:#10b981;">🧑‍💻 HIRING SIGNAL</span>
+          <div class="e-section-title">Linear hiring 6 enterprise engineers</div>
+          <div class="e-section-body">NYC + Berlin roles, enterprise integrations focus. <strong>Major Q3 platform push incoming.</strong> Watch for announcement.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

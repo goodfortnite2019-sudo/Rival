@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-font-smoothing:antialiased; }
+  body { width:1280px; height:800px; background:#050507; font-family:'Inter',system-ui,sans-serif; overflow:hidden; color:#fafafa; }
+
+  /* === BACKGROUND === */
+  .bg-grid { position:fixed; inset:0; background-image:linear-gradient(rgba(255,255,255,0.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.015) 1px,transparent 1px); background-size:64px 64px; pointer-events:none; }
+  .bg-glow { position:fixed; top:-100px; left:50%; transform:translateX(-50%); width:1000px; height:600px; background:radial-gradient(ellipse,rgba(16,185,129,0.09) 0%,transparent 65%); pointer-events:none; }
+
+  /* === NAV === */
+  nav { position:relative; z-index:20; height:52px; border-bottom:1px solid rgba(255,255,255,0.06); background:rgba(5,5,7,0.9); backdrop-filter:blur(12px); display:flex; align-items:center; padding:0 20px; gap:2px; }
+  .logo { display:flex; align-items:center; gap:8px; margin-right:20px; }
+  .logo svg { width:22px; height:22px; }
+  .logo-t { font-size:15px; font-weight:700; letter-spacing:-0.02em; }
+  .nav-i { font-size:12.5px; font-weight:500; padding:6px 12px; border-radius:8px; color:#52525b; cursor:default; }
+  .nav-i.on { color:#e4e4e7; background:rgba(255,255,255,0.06); }
+  .nav-r { margin-left:auto; display:flex; align-items:center; gap:10px; }
+  .pulse-dot { width:7px; height:7px; border-radius:50%; background:#10b981; box-shadow:0 0 0 2px rgba(16,185,129,0.2); animation:pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{box-shadow:0 0 0 2px rgba(16,185,129,0.2)} 50%{box-shadow:0 0 0 5px rgba(16,185,129,0)} }
+  .live-badge { display:flex; align-items:center; gap:5px; font-size:11px; font-weight:600; color:#10b981; padding:4px 10px; border-radius:99px; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.2); }
+  .user-av { width:30px; height:30px; border-radius:8px; background:linear-gradient(135deg,#10b981,#059669); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#000; }
+
+  /* === LAYOUT === */
+  .layout { display:grid; grid-template-columns:228px 1fr; height:748px; position:relative; z-index:1; }
+
+  /* === SIDEBAR === */
+  .sidebar { border-right:1px solid rgba(255,255,255,0.05); background:#030305; padding:14px 10px; display:flex; flex-direction:column; gap:2px; overflow:hidden; }
+  .sb-section { font-size:9.5px; font-weight:700; letter-spacing:0.1em; color:#27272a; text-transform:uppercase; padding:14px 10px 6px; }
+  .sb-item { display:flex; align-items:center; gap:9px; padding:7px 10px; border-radius:9px; cursor:default; }
+  .sb-item.on { background:rgba(16,185,129,0.08); }
+  .sb-item .ico { font-size:13px; width:16px; text-align:center; }
+  .sb-item .name { font-size:13px; font-weight:500; }
+  .sb-item.on .name { color:#fff; }
+  .sb-item:not(.on) .name { color:#52525b; }
+  .sb-item .badge { margin-left:auto; font-size:10px; font-weight:700; background:#10b981; color:#000; border-radius:5px; padding:1px 6px; line-height:16px; }
+  .comp-row { display:flex; align-items:center; gap:9px; padding:6px 10px; border-radius:9px; cursor:default; }
+  .comp-av { width:28px; height:28px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; flex-shrink:0; }
+  .comp-info { flex:1; min-width:0; }
+  .comp-name { font-size:12px; font-weight:500; color:#71717a; }
+  .comp-threat { font-size:10px; font-weight:700; }
+  .threat-dot { width:5px; height:5px; border-radius:50%; flex-shrink:0; }
+
+  /* === MAIN CONTENT === */
+  .content { padding:22px 26px; overflow:hidden; }
+  .page-top { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:20px; }
+  .page-title { font-size:20px; font-weight:800; letter-spacing:-0.03em; color:#fff; }
+  .page-sub { font-size:12px; color:#3f3f46; margin-top:3px; font-weight:400; }
+  .top-actions { display:flex; gap:8px; align-items:center; }
+  .chip { font-size:11.5px; font-weight:600; padding:6px 12px; border-radius:8px; }
+  .chip-green { background:rgba(16,185,129,0.1); color:#10b981; border:1px solid rgba(16,185,129,0.25); }
+  .chip-ghost { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); color:#52525b; }
+
+  /* === STAT CARDS === */
+  .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:18px; }
+  .stat { padding:16px 18px; border-radius:14px; background:#0b0b0e; border:1px solid rgba(255,255,255,0.05); position:relative; overflow:hidden; }
+  .stat::after { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent); }
+  .stat-l { font-size:11px; color:#52525b; font-weight:500; margin-bottom:8px; }
+  .stat-v { font-size:26px; font-weight:800; letter-spacing:-0.03em; line-height:1; }
+  .stat-t { font-size:10.5px; color:#27272a; margin-top:5px; font-weight:500; }
+  .stat.highlight { border-color:rgba(16,185,129,0.15); background:rgba(16,185,129,0.03); }
+  .stat.danger { border-color:rgba(239,68,68,0.12); background:rgba(239,68,68,0.02); }
+  /* sparkline */
+  .sparkline { position:absolute; bottom:12px; right:14px; opacity:0.6; }
+
+  /* === FEED === */
+  .feed-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  .feed-head-l { font-size:12px; font-weight:600; color:#52525b; }
+  .feed-item { display:flex; align-items:center; gap:11px; padding:11px 16px; border-radius:12px; margin-bottom:7px; border:1px solid rgba(255,255,255,0.04); background:rgba(255,255,255,0.012); transition:border-color 0.2s; }
+  .feed-item.hot { background:linear-gradient(90deg,rgba(245,158,11,0.04),rgba(245,158,11,0.01)); border-color:rgba(245,158,11,0.18); }
+  .feed-item.hot2 { background:linear-gradient(90deg,rgba(239,68,68,0.04),rgba(239,68,68,0.01)); border-color:rgba(239,68,68,0.15); }
+  .ftag { font-size:9px; font-weight:800; padding:3px 8px; border-radius:4px; font-family:monospace; letter-spacing:0.06em; flex-shrink:0; }
+  .fav { width:22px; height:22px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; flex-shrink:0; }
+  .fco { font-size:12.5px; font-weight:600; color:#e4e4e7; width:82px; flex-shrink:0; }
+  .fdesc { font-size:12px; color:#52525b; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .fdesc strong { color:#71717a; font-weight:600; }
+  .fright { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+  .fim { font-size:9px; font-weight:700; padding:2px 8px; border-radius:4px; }
+  .ft { font-size:11px; color:#3f3f46; font-weight:500; }
+
+  /* === TOAST === */
+  .toast { position:absolute; bottom:24px; right:24px; background:#111115; border:1px solid rgba(16,185,129,0.25); border-radius:14px; padding:14px 16px; display:flex; align-items:flex-start; gap:12px; width:300px; box-shadow:0 20px 60px rgba(0,0,0,0.5); }
+  .toast-icon { width:32px; height:32px; border-radius:9px; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.2); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:14px; }
+  .toast-title { font-size:12px; font-weight:700; color:#fff; margin-bottom:3px; }
+  .toast-body { font-size:11px; color:#52525b; line-height:1.5; }
+  .toast-time { font-size:10px; color:#10b981; font-weight:600; margin-top:5px; }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" stroke="#10b981" stroke-width="1.5"/><circle cx="12" cy="12" r="5" fill="#10b981"/></svg>
+    <span class="logo-t">Rival</span>
+  </div>
+  <div class="nav-i on">Dashboard</div>
+  <div class="nav-i">Competitors</div>
+  <div class="nav-i">Reports</div>
+  <div class="nav-i">Settings</div>
+  <div class="nav-r">
+    <div class="live-badge"><div class="pulse-dot"></div>5 live</div>
+    <div style="width:1px;height:20px;background:rgba(255,255,255,0.06);"></div>
+    <div class="user-av">J</div>
+  </div>
+</nav>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-section">Navigation</div>
+    <div class="sb-item on">
+      <span class="ico" style="color:#10b981;">⬡</span>
+      <span class="name">Intelligence Feed</span>
+      <span class="badge">5</span>
+    </div>
+    <div class="sb-item">
+      <span class="ico" style="color:#3f3f46;">◎</span>
+      <span class="name">All Competitors</span>
+    </div>
+    <div class="sb-item">
+      <span class="ico" style="color:#3f3f46;">◈</span>
+      <span class="name">Weekly Reports</span>
+    </div>
+    <div class="sb-item">
+      <span class="ico" style="color:#3f3f46;">◉</span>
+      <span class="name">Alert History</span>
+    </div>
+
+    <div class="sb-section">Competitors</div>
+    <div class="comp-row">
+      <div class="comp-av" style="background:rgba(99,102,241,0.15);color:#818cf8;">N</div>
+      <div class="comp-info">
+        <div class="comp-name" style="color:#e4e4e7;">Notion</div>
+        <div class="comp-threat" style="color:#ef4444;">HIGH THREAT · 78</div>
+      </div>
+      <div class="threat-dot" style="background:#ef4444;box-shadow:0 0 5px rgba(239,68,68,0.5);"></div>
+    </div>
+    <div class="comp-row">
+      <div class="comp-av" style="background:rgba(59,130,246,0.12);color:#60a5fa;">L</div>
+      <div class="comp-info">
+        <div class="comp-name">Linear</div>
+        <div class="comp-threat" style="color:#f59e0b;">ACTIVE · 62</div>
+      </div>
+      <div class="threat-dot" style="background:#f59e0b;"></div>
+    </div>
+    <div class="comp-row">
+      <div class="comp-av" style="background:rgba(236,72,153,0.12);color:#f472b6;">F</div>
+      <div class="comp-info">
+        <div class="comp-name">Figma</div>
+        <div class="comp-threat" style="color:#f59e0b;">ACTIVE · 55</div>
+      </div>
+      <div class="threat-dot" style="background:#f59e0b;"></div>
+    </div>
+    <div class="comp-row">
+      <div class="comp-av" style="background:rgba(239,68,68,0.1);color:#f87171;">L</div>
+      <div class="comp-info">
+        <div class="comp-name">Loom</div>
+        <div class="comp-threat" style="color:#10b981;">WATCHING · 31</div>
+      </div>
+      <div class="threat-dot" style="background:#3f3f46;"></div>
+    </div>
+    <div class="comp-row">
+      <div class="comp-av" style="background:rgba(167,139,250,0.1);color:#c4b5fd;">S</div>
+      <div class="comp-info">
+        <div class="comp-name">Superhuman</div>
+        <div class="comp-threat" style="color:#3f3f46;">QUIET · 22</div>
+      </div>
+      <div class="threat-dot" style="background:#1c1c20;"></div>
+    </div>
+
+    <div style="margin-top:auto; padding:10px; background:rgba(16,185,129,0.04); border:1px solid rgba(16,185,129,0.12); border-radius:10px;">
+      <div style="font-size:10px;font-weight:700;color:#10b981;margin-bottom:2px;">Next briefing</div>
+      <div style="font-size:11px;color:#52525b;">Monday · 8:00 AM</div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="content" style="position:relative;">
+    <div class="page-top">
+      <div>
+        <div class="page-title">Intelligence Feed</div>
+        <div class="page-sub">June 23–29, 2026 · AI-analyzed · Last scan 2h ago</div>
+      </div>
+      <div class="top-actions">
+        <div class="chip chip-green">5 changes detected</div>
+        <div class="chip chip-ghost">↓ Export PDF</div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-l">Competitors monitored</div>
+        <div class="stat-v" style="color:#fff;">5</div>
+        <div class="stat-t">of 5 active slots</div>
+        <div class="sparkline">
+          <svg width="60" height="24" viewBox="0 0 60 24"><polyline points="0,20 10,18 20,15 30,16 40,12 50,10 60,8" fill="none" stroke="rgba(16,185,129,0.3)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+      <div class="stat highlight">
+        <div class="stat-l">Changes this week</div>
+        <div class="stat-v" style="color:#10b981;">5</div>
+        <div class="stat-t">+2 vs last week</div>
+        <div class="sparkline">
+          <svg width="60" height="24" viewBox="0 0 60 24"><polyline points="0,22 10,20 20,18 30,14 40,16 50,10 60,6" fill="none" stroke="rgba(16,185,129,0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+      <div class="stat danger">
+        <div class="stat-l">High priority</div>
+        <div class="stat-v" style="color:#ef4444;">3</div>
+        <div class="stat-t">require action now</div>
+        <div class="sparkline">
+          <svg width="60" height="24" viewBox="0 0 60 24"><polyline points="0,22 10,20 20,22 30,16 40,14 50,18 60,10" fill="none" stroke="rgba(239,68,68,0.35)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+      <div class="stat">
+        <div class="stat-l">Weekly briefing</div>
+        <div class="stat-v" style="color:#fff;font-size:20px;padding-top:4px;">Monday</div>
+        <div class="stat-t">delivered 8:00 AM</div>
+      </div>
+    </div>
+
+    <!-- FEED -->
+    <div class="feed-head">
+      <span class="feed-head-l">Latest intelligence · sorted by impact</span>
+    </div>
+
+    <div class="feed-item hot">
+      <div class="fav" style="background:rgba(245,158,11,0.12);color:#f59e0b;">⬆</div>
+      <span class="ftag" style="background:rgba(245,158,11,0.1);color:#f59e0b;">PRICING</span>
+      <div class="comp-av" style="background:rgba(99,102,241,0.1);color:#818cf8;width:20px;height:20px;border-radius:5px;font-size:9px;">N</div>
+      <span class="fco">Notion</span>
+      <span class="fdesc"><strong>Plus plan €8 → €12/mo (+50%)</strong> · Free tier storage cut from 5MB to 2MB</span>
+      <div class="fright">
+        <span class="fim" style="background:rgba(239,68,68,0.1);color:#ef4444;">HIGH</span>
+        <span class="ft">2h ago</span>
+      </div>
+    </div>
+
+    <div class="feed-item hot2">
+      <div class="fav" style="background:rgba(16,185,129,0.1);color:#10b981;">+</div>
+      <span class="ftag" style="background:rgba(16,185,129,0.08);color:#10b981;">HIRING</span>
+      <div class="comp-av" style="background:rgba(59,130,246,0.1);color:#60a5fa;width:20px;height:20px;border-radius:5px;font-size:9px;">L</div>
+      <span class="fco">Linear</span>
+      <span class="fdesc"><strong>6 enterprise engineering roles</strong> opened in NYC & Berlin · Q3 platform push</span>
+      <div class="fright">
+        <span class="fim" style="background:rgba(239,68,68,0.1);color:#ef4444;">HIGH</span>
+        <span class="ft">6h ago</span>
+      </div>
+    </div>
+
+    <div class="feed-item hot">
+      <div class="fav" style="background:rgba(245,158,11,0.12);color:#f59e0b;">⬆</div>
+      <span class="ftag" style="background:rgba(245,158,11,0.1);color:#f59e0b;">PRICING</span>
+      <div class="comp-av" style="background:rgba(236,72,153,0.1);color:#f472b6;width:20px;height:20px;border-radius:5px;font-size:9px;">F</div>
+      <span class="fco">Figma</span>
+      <span class="fdesc"><strong>Starter tier silently removed</strong> · New entry: Professional at $15/seat/mo</span>
+      <div class="fright">
+        <span class="fim" style="background:rgba(239,68,68,0.1);color:#ef4444;">HIGH</span>
+        <span class="ft">1d ago</span>
+      </div>
+    </div>
+
+    <div class="feed-item">
+      <div class="fav" style="background:rgba(59,130,246,0.1);color:#60a5fa;">★</div>
+      <span class="ftag" style="background:rgba(59,130,246,0.08);color:#60a5fa;">FEATURE</span>
+      <div class="comp-av" style="background:rgba(239,68,68,0.1);color:#f87171;width:20px;height:20px;border-radius:5px;font-size:9px;">L</div>
+      <span class="fco">Loom</span>
+      <span class="fdesc">AI-powered video summaries now available on <strong>all plans including Free</strong></span>
+      <div class="fright">
+        <span class="fim" style="background:rgba(245,158,11,0.08);color:#f59e0b;">MED</span>
+        <span class="ft">2d ago</span>
+      </div>
+    </div>
+
+    <div class="feed-item">
+      <div class="fav" style="background:rgba(59,130,246,0.1);color:#60a5fa;">★</div>
+      <span class="ftag" style="background:rgba(59,130,246,0.08);color:#60a5fa;">FEATURE</span>
+      <div class="comp-av" style="background:rgba(59,130,246,0.1);color:#60a5fa;width:20px;height:20px;border-radius:5px;font-size:9px;">L</div>
+      <span class="fco">Linear</span>
+      <span class="fdesc">Linear for Enterprise GA · <strong>SSO, audit logs, custom workflows</strong> now live</span>
+      <div class="fright">
+        <span class="fim" style="background:rgba(239,68,68,0.1);color:#ef4444;">HIGH</span>
+        <span class="ft">3d ago</span>
+      </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div class="toast">
+      <div class="toast-icon">⚡</div>
+      <div>
+        <div class="toast-title">Instant alert sent</div>
+        <div class="toast-body">Notion pricing change emailed + Slack #competitor-intel notified</div>
+        <div class="toast-time">Just now · 2h ago</div>
+      </div>
+      <div style="margin-left:auto;font-size:16px;color:#27272a;cursor:default;">×</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

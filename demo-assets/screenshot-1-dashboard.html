@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1280px; height: 800px; background: #050507; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; overflow: hidden; color: #fafafa; }
+  .grid-bg { position: fixed; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px); background-size: 80px 80px; pointer-events: none; }
+  .glow { position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 900px; height: 500px; background: radial-gradient(ellipse at 50% 0%, rgba(16,185,129,0.1) 0%, transparent 65%); pointer-events: none; }
+  nav { height: 52px; border-bottom: 1px solid rgba(255,255,255,0.06); background: rgba(5,5,7,0.95); display: flex; align-items: center; padding: 0 24px; gap: 24px; position: relative; z-index: 10; }
+  .logo { display: flex; align-items: center; gap: 8px; }
+  .logo-dot { width: 16px; height: 16px; }
+  .logo-text { font-size: 15px; font-weight: 700; color: #fff; }
+  .nav-link { font-size: 12px; color: #52525b; padding: 5px 10px; border-radius: 7px; }
+  .nav-link.active { color: #fff; background: rgba(255,255,255,0.06); }
+  .badge-live { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 99px; background: rgba(16,185,129,0.1); color: #10b981; border: 1px solid rgba(16,185,129,0.25); margin-left: auto; }
+  .main { display: grid; grid-template-columns: 220px 1fr; height: calc(800px - 52px); position: relative; z-index: 1; }
+  .sidebar { border-right: 1px solid rgba(255,255,255,0.05); padding: 16px 12px; background: #040406; overflow: hidden; }
+  .sidebar-label { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; color: #27272a; margin: 0 0 8px 8px; text-transform: uppercase; }
+  .sidebar-item { display: flex; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 8px; margin-bottom: 3px; cursor: default; }
+  .sidebar-item.active { background: rgba(16,185,129,0.08); }
+  .sidebar-icon { font-size: 10px; }
+  .sidebar-name { font-size: 12px; }
+  .sidebar-count { margin-left: auto; font-size: 10px; font-weight: 700; background: #10b981; color: #000; border-radius: 4px; padding: 1px 6px; }
+  .comp-avatar { width: 26px; height: 26px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #fff; flex-shrink: 0; }
+  .comp-name { font-size: 12px; color: #71717a; }
+  .comp-dot { width: 6px; height: 6px; border-radius: 50%; background: #10b981; margin-left: auto; flex-shrink: 0; }
+  .content { padding: 24px; overflow: hidden; }
+  .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
+  .page-title { font-size: 18px; font-weight: 700; color: #fff; }
+  .page-sub { font-size: 12px; color: #3f3f46; margin-top: 3px; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+  .stat-card { padding: 14px 16px; border-radius: 12px; background: #0c0c0f; border: 1px solid rgba(255,255,255,0.05); }
+  .stat-label { font-size: 10px; color: #52525b; margin-bottom: 5px; }
+  .stat-value { font-size: 24px; font-weight: 700; line-height: 1; }
+  .stat-sub { font-size: 10px; color: #27272a; margin-top: 4px; }
+  .feed-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .feed-title { font-size: 13px; font-weight: 600; color: #a1a1aa; }
+  .feed-badge { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 7px; background: rgba(16,185,129,0.08); color: #10b981; border: 1px solid rgba(16,185,129,0.2); }
+  .feed-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.04); background: rgba(255,255,255,0.015); transition: all 0.3s; }
+  .feed-item.hot { background: rgba(245,158,11,0.05); border-color: rgba(245,158,11,0.2); transform: translateX(4px); }
+  .feed-type { font-size: 9px; font-weight: 800; padding: 3px 7px; border-radius: 4px; font-family: monospace; letter-spacing: 0.05em; flex-shrink: 0; }
+  .feed-company { font-size: 12px; font-weight: 600; color: #e4e4e7; flex-shrink: 0; width: 80px; }
+  .feed-detail { font-size: 12px; color: #52525b; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .feed-time { font-size: 11px; color: #27272a; flex-shrink: 0; }
+  .feed-impact { font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 4px; flex-shrink: 0; }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="glow"></div>
+
+<nav>
+  <div class="logo">
+    <svg class="logo-dot" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#10b981" stroke-width="1.5"/><circle cx="10" cy="10" r="4" fill="#10b981"/></svg>
+    <span class="logo-text">Rival</span>
+  </div>
+  <span class="nav-link active">Dashboard</span>
+  <span class="nav-link">Competitors</span>
+  <span class="nav-link">Reports</span>
+  <span class="nav-link">Settings</span>
+  <div class="badge-live">● 5 competitors live</div>
+  <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#10b981,#059669);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#000;margin-left:12px;">J</div>
+</nav>
+
+<div class="main">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-label" style="margin-top:8px;">Views</div>
+    <div class="sidebar-item active">
+      <span class="sidebar-icon" style="color:#10b981;">◈</span>
+      <span class="sidebar-name" style="color:#e4e4e7;font-weight:500;">Intelligence Feed</span>
+      <span class="sidebar-count">5</span>
+    </div>
+    <div class="sidebar-item">
+      <span class="sidebar-icon" style="color:#3f3f46;">⬡</span>
+      <span class="sidebar-name" style="color:#52525b;">All Competitors</span>
+    </div>
+    <div class="sidebar-item">
+      <span class="sidebar-icon" style="color:#3f3f46;">◉</span>
+      <span class="sidebar-name" style="color:#52525b;">Weekly Reports</span>
+    </div>
+
+    <div class="sidebar-label" style="margin-top:20px;">Competitors</div>
+    <div style="display:flex;flex-direction:column;gap:8px;padding:0 4px;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="comp-avatar" style="background:hsl(244,40%,22%);">N</div>
+        <div><div class="comp-name" style="color:#e4e4e7;">Notion</div><div style="font-size:10px;color:#ef4444;font-weight:600;">HIGH THREAT</div></div>
+        <div class="comp-dot" style="background:#ef4444;"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="comp-avatar" style="background:hsl(200,40%,18%);">L</div>
+        <div><div class="comp-name">Linear</div><div style="font-size:10px;color:#f59e0b;font-weight:600;">ACTIVE</div></div>
+        <div class="comp-dot" style="background:#f59e0b;"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="comp-avatar" style="background:hsl(220,40%,18%);">F</div>
+        <div><div class="comp-name">Figma</div><div style="font-size:10px;color:#f59e0b;font-weight:600;">ACTIVE</div></div>
+        <div class="comp-dot" style="background:#f59e0b;"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="comp-avatar" style="background:hsl(0,40%,18%);">L</div>
+        <div><div class="comp-name">Loom</div><div style="font-size:10px;color:#10b981;font-weight:600;">WATCHING</div></div>
+        <div class="comp-dot"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="comp-avatar" style="background:hsl(280,35%,18%);">S</div>
+        <div><div class="comp-name">Superhuman</div><div style="font-size:10px;color:#3f3f46;font-weight:600;">QUIET</div></div>
+        <div class="comp-dot" style="background:#27272a;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Intelligence Feed</div>
+        <div class="page-sub">Week of June 23–29, 2026 · Claude-powered analysis · Updated 2 hours ago</div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <div class="feed-badge">5 changes detected</div>
+        <div style="padding:7px 14px;border-radius:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);font-size:12px;color:#52525b;">Export PDF</div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-label">Competitors monitored</div>
+        <div class="stat-value" style="color:#fff;">5</div>
+        <div class="stat-sub">of 5 active</div>
+      </div>
+      <div class="stat-card" style="border-color:rgba(16,185,129,0.15);">
+        <div class="stat-label">Changes this week</div>
+        <div class="stat-value" style="color:#10b981;">5</div>
+        <div class="stat-sub">across all competitors</div>
+      </div>
+      <div class="stat-card" style="border-color:rgba(239,68,68,0.12);">
+        <div class="stat-label">High priority</div>
+        <div class="stat-value" style="color:#ef4444;">3</div>
+        <div class="stat-sub">need your attention</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Next briefing</div>
+        <div class="stat-value" style="color:#fff;font-size:18px;margin-top:3px;">Monday</div>
+        <div class="stat-sub">delivered 8am</div>
+      </div>
+    </div>
+
+    <!-- Feed -->
+    <div class="feed-header">
+      <span class="feed-title">Latest changes</span>
+    </div>
+
+    <div class="feed-item hot">
+      <span class="feed-type" style="background:rgba(245,158,11,0.12);color:#f59e0b;">PRICING</span>
+      <span class="feed-company">Notion</span>
+      <span class="feed-detail">Plus plan raised €8 → €12/month (+50%) · Free tier storage cut from 5MB to 2MB</span>
+      <span class="feed-impact" style="background:rgba(239,68,68,0.1);color:#ef4444;">HIGH</span>
+      <span class="feed-time">2h ago</span>
+    </div>
+
+    <div class="feed-item">
+      <span class="feed-type" style="background:rgba(16,185,129,0.1);color:#10b981;">HIRING</span>
+      <span class="feed-company">Linear</span>
+      <span class="feed-detail">6 new engineering roles opened in NYC & Berlin · Focus: Enterprise integrations</span>
+      <span class="feed-impact" style="background:rgba(239,68,68,0.1);color:#ef4444;">HIGH</span>
+      <span class="feed-time">6h ago</span>
+    </div>
+
+    <div class="feed-item">
+      <span class="feed-type" style="background:rgba(245,158,11,0.1);color:#f59e0b;">PRICING</span>
+      <span class="feed-company">Figma</span>
+      <span class="feed-detail">Starter tier silently removed · New entry point: Professional at $15/seat/mo</span>
+      <span class="feed-impact" style="background:rgba(239,68,68,0.1);color:#ef4444;">HIGH</span>
+      <span class="feed-time">1d ago</span>
+    </div>
+
+    <div class="feed-item">
+      <span class="feed-type" style="background:rgba(59,130,246,0.1);color:#3b82f6;">FEATURE</span>
+      <span class="feed-company">Loom</span>
+      <span class="feed-detail">AI-powered video summaries now available on all plans including Free</span>
+      <span class="feed-impact" style="background:rgba(245,158,11,0.1);color:#f59e0b;">MED</span>
+      <span class="feed-time">2d ago</span>
+    </div>
+
+    <div class="feed-item">
+      <span class="feed-type" style="background:rgba(59,130,246,0.1);color:#3b82f6;">FEATURE</span>
+      <span class="feed-company">Linear</span>
+      <span class="feed-detail">Linear for Enterprise launched GA · SSO, audit logs, custom workflows now live</span>
+      <span class="feed-impact" style="background:rgba(239,68,68,0.1);color:#ef4444;">HIGH</span>
+      <span class="feed-time">3d ago</span>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { width:1280px; height:800px; background:#050507; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; overflow:hidden; color:#fafafa; }
+  .grid-bg { position:fixed; inset:0; background-image:linear-gradient(rgba(255,255,255,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.018) 1px,transparent 1px); background-size:80px 80px; pointer-events:none; }
+  nav { height:52px; border-bottom:1px solid rgba(255,255,255,0.06); background:rgba(5,5,7,0.95); display:flex; align-items:center; padding:0 24px; gap:16px; position:relative; z-index:10; }
+  .logo-text { font-size:15px; font-weight:700; color:#fff; }
+  .nav-link { font-size:12px; color:#52525b; }
+  .main { display:grid; grid-template-columns:220px 1fr; height:748px; position:relative; z-index:1; }
+  .sidebar { border-right:1px solid rgba(255,255,255,0.05); padding:16px 12px; background:#040406; }
+  .content { padding:24px 28px; overflow:hidden; }
+  /* Competitor header */
+  .comp-header { display:flex; align-items:center; gap:16px; margin-bottom:24px; padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.05); }
+  .comp-logo-big { width:52px; height:52px; border-radius:14px; background:hsl(244,40%,20%); display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:800; color:#fff; }
+  .comp-name-big { font-size:22px; font-weight:800; color:#fff; letter-spacing:-0.02em; }
+  .comp-url { font-size:13px; color:#52525b; margin-top:2px; }
+  /* Health score */
+  .health-box { margin-left:auto; text-align:right; }
+  .health-label-sm { font-size:11px; color:#52525b; margin-bottom:6px; }
+  .health-score-big { font-size:48px; font-weight:800; color:#ef4444; line-height:1; letter-spacing:-0.03em; }
+  .health-bar-wrap { width:200px; height:8px; background:rgba(255,255,255,0.06); border-radius:99px; margin-top:8px; overflow:hidden; }
+  .health-bar-fill { height:100%; border-radius:99px; background:linear-gradient(90deg,#f59e0b,#ef4444); width:78%; }
+  .health-badge { display:inline-block; font-size:10px; font-weight:800; padding:3px 10px; border-radius:99px; background:rgba(239,68,68,0.12); color:#ef4444; border:1px solid rgba(239,68,68,0.25); margin-top:6px; }
+  /* Grid of cards */
+  .cards { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px; }
+  .change-card { padding:18px 20px; border-radius:14px; background:#0c0c0f; border:1px solid rgba(255,255,255,0.06); }
+  .change-card-header { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+  .change-type-tag { font-size:9px; font-weight:800; padding:3px 8px; border-radius:4px; font-family:monospace; letter-spacing:0.05em; }
+  .change-page { font-size:11px; color:#52525b; }
+  .change-impact { margin-left:auto; font-size:9px; font-weight:700; padding:2px 8px; border-radius:4px; }
+  .change-title { font-size:14px; font-weight:700; color:#fff; margin-bottom:6px; }
+  .change-body { font-size:12px; color:#71717a; line-height:1.65; }
+  .change-body strong { color:#a1a1aa; }
+  .change-time { font-size:11px; color:#27272a; margin-top:8px; }
+  /* Timeline */
+  .timeline { }
+  .timeline-label { font-size:10px; font-weight:700; letter-spacing:0.1em; color:#27272a; text-transform:uppercase; margin-bottom:12px; }
+  .timeline-item { display:flex; gap:12px; margin-bottom:10px; }
+  .timeline-dot-wrap { display:flex; flex-direction:column; align-items:center; }
+  .timeline-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:4px; }
+  .timeline-line { width:1px; background:rgba(255,255,255,0.05); flex:1; margin-top:4px; }
+  .timeline-content { flex:1; padding-bottom:10px; }
+  .timeline-event { font-size:12px; color:#a1a1aa; margin-bottom:2px; }
+  .timeline-date { font-size:10px; color:#27272a; }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<nav>
+  <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#10b981" stroke-width="1.5"/><circle cx="10" cy="10" r="4" fill="#10b981"/></svg>
+  <span class="logo-text">Rival</span>
+  <span style="color:#27272a;font-size:12px;">/ Competitors /</span>
+  <span style="font-size:12px;color:#e4e4e7;font-weight:500;">Notion</span>
+  <div style="margin-left:auto;font-size:12px;color:#52525b;">Last scan: 2 hours ago</div>
+</nav>
+<div class="main">
+  <div class="sidebar" style="padding:16px 12px;">
+    <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;color:#27272a;margin:0 0 8px 8px;text-transform:uppercase;">Competitors</div>
+    <div style="display:flex;flex-direction:column;gap:4px;">
+      <div style="display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.15);">
+        <div style="width:26px;height:26px;border-radius:7px;background:hsl(244,40%,20%);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;">N</div>
+        <div><div style="font-size:12px;color:#fff;font-weight:500;">Notion</div><div style="font-size:9px;color:#ef4444;font-weight:600;">SCORE: 78</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;">
+        <div style="width:26px;height:26px;border-radius:7px;background:hsl(200,40%,18%);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;">L</div>
+        <div><div style="font-size:12px;color:#71717a;">Linear</div><div style="font-size:9px;color:#f59e0b;font-weight:600;">SCORE: 62</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;">
+        <div style="width:26px;height:26px;border-radius:7px;background:hsl(220,40%,18%);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;">F</div>
+        <div><div style="font-size:12px;color:#71717a;">Figma</div><div style="font-size:9px;color:#f59e0b;font-weight:600;">SCORE: 55</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;">
+        <div style="width:26px;height:26px;border-radius:7px;background:hsl(0,40%,18%);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;">L</div>
+        <div><div style="font-size:12px;color:#71717a;">Loom</div><div style="font-size:9px;color:#10b981;font-weight:600;">SCORE: 31</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;">
+        <div style="width:26px;height:26px;border-radius:7px;background:hsl(280,35%,18%);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;">S</div>
+        <div><div style="font-size:12px;color:#71717a;">Superhuman</div><div style="font-size:9px;color:#3f3f46;font-weight:600;">SCORE: 22</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- Header -->
+    <div class="comp-header">
+      <div class="comp-logo-big">N</div>
+      <div>
+        <div class="comp-name-big">Notion</div>
+        <div class="comp-url">notion.so · Monitoring 6 pages</div>
+      </div>
+      <div class="health-box">
+        <div class="health-label-sm">AI Threat Score</div>
+        <div class="health-score-big">78</div>
+        <div class="health-bar-wrap"><div class="health-bar-fill"></div></div>
+        <div class="health-badge">HIGH THREAT</div>
+      </div>
+    </div>
+
+    <!-- Change cards -->
+    <div class="cards">
+      <div class="change-card" style="border-color:rgba(245,158,11,0.2);background:rgba(245,158,11,0.03);">
+        <div class="change-card-header">
+          <span class="change-type-tag" style="background:rgba(245,158,11,0.12);color:#f59e0b;">PRICING</span>
+          <span class="change-page">pricing page</span>
+          <span class="change-impact" style="background:rgba(239,68,68,0.1);color:#ef4444;">HIGH IMPACT</span>
+        </div>
+        <div class="change-title">Plus plan raised €8 → €12/mo</div>
+        <div class="change-body">Free tier storage cut from 5MB to 2MB. <strong>This is a deliberate upmarket shift.</strong> They're pricing out individual users to accelerate team adoption.</div>
+        <div class="change-time">Detected 3 days ago</div>
+      </div>
+
+      <div class="change-card">
+        <div class="change-card-header">
+          <span class="change-type-tag" style="background:rgba(167,139,250,0.12);color:#a78bfa;">CONTENT</span>
+          <span class="change-page">homepage</span>
+          <span class="change-impact" style="background:rgba(245,158,11,0.1);color:#f59e0b;">MEDIUM</span>
+        </div>
+        <div class="change-title">New messaging: team-first positioning</div>
+        <div class="change-body">Headline changed to "The connected workspace for your team". <strong>Individual user messaging removed entirely.</strong> Clear enterprise pivot in progress.</div>
+        <div class="change-time">Detected 5 days ago</div>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="timeline">
+      <div class="timeline-label">Change History — last 12 weeks</div>
+      <div style="display:flex;flex-direction:column;gap:0;">
+        <div class="timeline-item">
+          <div class="timeline-dot-wrap">
+            <div class="timeline-dot" style="background:#ef4444;box-shadow:0 0 6px rgba(239,68,68,0.5);"></div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-event"><strong style="color:#f59e0b;">PRICING</strong> — Plus plan €8 → €12 · Free storage cut to 2MB</div>
+            <div class="timeline-date">June 26, 2026</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot-wrap">
+            <div class="timeline-dot" style="background:#a78bfa;"></div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-event"><strong style="color:#a78bfa;">CONTENT</strong> — Homepage copy shifted to team-first messaging</div>
+            <div class="timeline-date">June 24, 2026</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot-wrap">
+            <div class="timeline-dot" style="background:#3b82f6;"></div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-event"><strong style="color:#3b82f6;">FEATURE</strong> — Notion AI expanded to all plans, removed add-on pricing</div>
+            <div class="timeline-date">June 10, 2026</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot-wrap">
+            <div class="timeline-dot" style="background:#10b981;"></div>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-event"><strong style="color:#10b981;">HIRING</strong> — 4 enterprise sales roles opened in London</div>
+            <div class="timeline-date">May 28, 2026</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

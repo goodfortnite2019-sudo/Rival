@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1280px; height: 800px; background: #0a0a0d; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 40px; }
+  .context-panel { width: 340px; }
+  .context-title { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: #27272a; text-transform: uppercase; margin-bottom: 16px; }
+  .setting-row { padding: 14px 16px; background: #0c0c0f; border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; margin-bottom: 8px; }
+  .setting-label { font-size: 11px; color: #52525b; margin-bottom: 4px; }
+  .setting-val { font-size: 13px; color: #e4e4e7; font-weight: 500; }
+  .slack-preview { background: #0c0c0f; border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; margin-top: 16px; }
+  .slack-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .slack-icon { width: 28px; height: 28px; border-radius: 7px; background: linear-gradient(135deg,#4a154b,#7c1d6f); display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .slack-channel { font-size: 12px; color: #e4e4e7; font-weight: 600; }
+  .slack-msg { border-left: 3px solid #ef4444; padding-left: 12px; }
+  .slack-from { font-size: 11px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .slack-text { font-size: 12px; color: #a1a1aa; line-height: 1.6; }
+  .slack-text strong { color: #e4e4e7; }
+  /* Email mockup */
+  .email-phone { width: 440px; flex-shrink: 0; }
+  .phone-chrome { background: #1a1a1a; border-radius: 32px; padding: 16px; box-shadow: 0 40px 120px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); }
+  .phone-notch { width: 120px; height: 28px; background: #1a1a1a; border-radius: 0 0 16px 16px; margin: 0 auto 12px; position: relative; z-index: 2; border: 1px solid rgba(255,255,255,0.06); border-top: none; }
+  .phone-screen { background: #050507; border-radius: 20px; overflow: hidden; min-height: 580px; }
+  .status-bar { height: 28px; background: #050507; display: flex; align-items: center; padding: 0 20px; justify-content: space-between; }
+  .status-time { font-size: 12px; font-weight: 600; color: #fff; }
+  .status-icons { font-size: 11px; color: #fff; display: flex; gap: 4px; align-items: center; }
+  .email-app-header { background: #050507; padding: 12px 16px 8px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .email-app-title { font-size: 20px; font-weight: 700; color: #fff; }
+  .notification-banner { margin: 12px 12px 0; background: #ef4444; border-radius: 14px; padding: 14px 16px; }
+  .notif-from { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.7); margin-bottom: 3px; }
+  .notif-title { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 3px; }
+  .notif-body { font-size: 12px; color: rgba(255,255,255,0.8); line-height: 1.5; }
+  .email-list { padding: 12px; }
+  .email-item { padding: 14px 12px; border-radius: 12px; margin-bottom: 6px; }
+  .email-item.unread { background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.2); }
+  .email-item-from { font-size: 11px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+  .email-item-subject { font-size: 12px; color: #e4e4e7; font-weight: 600; margin-bottom: 3px; }
+  .email-item-preview { font-size: 11px; color: #52525b; }
+  .email-item-time { font-size: 10px; color: #ef4444; font-weight: 600; float: right; }
+  .email-item2-from { font-size: 11px; color: #52525b; margin-bottom: 2px; }
+  .email-item2-subject { font-size: 12px; color: #71717a; font-weight: 500; margin-bottom: 3px; }
+  .email-item2-preview { font-size: 11px; color: #27272a; }
+  .email-item2-time { font-size: 10px; color: #27272a; float: right; }
+  /* Alert email full view */
+  .email-full { width: 400px; }
+  .email-full-chrome { background: #050507; border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; overflow: hidden; }
+  .email-full-header { padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 10px; }
+  .email-full-body { padding: 20px; }
+  .alert-badge { display: inline-block; background: rgba(239,68,68,0.12); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); font-size: 9px; font-weight: 800; padding: 3px 10px; border-radius: 99px; letter-spacing: 0.1em; margin-bottom: 14px; }
+  .alert-subject { font-size: 17px; font-weight: 800; color: #fff; margin-bottom: 6px; letter-spacing: -0.02em; }
+  .alert-meta { font-size: 11px; color: #3f3f46; margin-bottom: 20px; }
+  .alert-card { background: rgba(239,68,68,0.05); border: 1px solid rgba(239,68,68,0.2); border-radius: 12px; padding: 16px; margin-bottom: 14px; }
+  .alert-card-label { font-size: 9px; font-weight: 800; color: #ef4444; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+  .alert-card-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+  .alert-card-body { font-size: 12px; color: #71717a; line-height: 1.7; }
+  .alert-card-body strong { color: #e4e4e7; }
+  .alert-cta { display: flex; gap: 10px; }
+  .alert-btn-primary { flex: 1; padding: 10px; border-radius: 9px; background: #ef4444; color: #fff; font-size: 12px; font-weight: 700; text-align: center; }
+  .alert-btn-secondary { flex: 1; padding: 10px; border-radius: 9px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #71717a; font-size: 12px; font-weight: 600; text-align: center; }
+</style>
+</head>
+<body>
+  <!-- Left: Context panels -->
+  <div class="context-panel">
+    <div class="context-title">Trigger Conditions</div>
+    <div class="setting-row">
+      <div class="setting-label">Instant alerts for</div>
+      <div class="setting-val">Pricing changes · HIGH significance</div>
+    </div>
+    <div class="setting-row">
+      <div class="setting-label">Delivery</div>
+      <div class="setting-val">Email + Slack · within minutes</div>
+    </div>
+    <div class="setting-row" style="border-color:rgba(239,68,68,0.2);background:rgba(239,68,68,0.04);">
+      <div class="setting-label" style="color:#ef4444;">⚡ Triggered 18 minutes ago</div>
+      <div class="setting-val">Notion — pricing page change detected</div>
+    </div>
+
+    <div class="slack-preview">
+      <div class="slack-header">
+        <div class="slack-icon">🔔</div>
+        <div>
+          <div class="slack-channel">#competitor-intel</div>
+          <div style="font-size:10px;color:#52525b;">Rival Bot · just now</div>
+        </div>
+      </div>
+      <div class="slack-msg">
+        <div class="slack-from">⚡ Instant Alert — Notion</div>
+        <div class="slack-text"><strong>Pricing change detected</strong> on pricing page.<br>Plus plan: €8 → €12/month (+50%). Free tier storage cut from 5MB to 2MB.<br><br>💡 <em>Recommendation: Run targeted ad to Notion Free users this week.</em></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Middle: Phone with notification -->
+  <div class="email-phone">
+    <div class="phone-chrome">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="status-bar">
+          <span class="status-time">18:44</span>
+          <div class="status-icons">
+            <span>▌▌▌▌</span>
+            <span>WiFi</span>
+            <span>🔋</span>
+          </div>
+        </div>
+
+        <div class="notification-banner">
+          <div class="notif-from">⚡ RIVAL — INSTANT ALERT</div>
+          <div class="notif-title">Notion just changed their pricing</div>
+          <div class="notif-body">Plus plan raised 50%. Free tier cut. See full analysis →</div>
+        </div>
+
+        <div class="email-app-header">
+          <div class="email-app-title">Inbox</div>
+        </div>
+
+        <div class="email-list">
+          <div class="email-item unread">
+            <span class="email-item-time">NOW</span>
+            <div class="email-item-from">⚡ Rival</div>
+            <div class="email-item-subject">Alert: Notion pricing change detected</div>
+            <div class="email-item-preview">Plus plan raised 50%... tap to read full analysis</div>
+          </div>
+          <div class="email-item" style="border:1px solid rgba(255,255,255,0.04);">
+            <span class="email-item2-time">Mon</span>
+            <div class="email-item2-from">Rival Briefing</div>
+            <div class="email-item2-subject">Weekly Intelligence: 5 changes detected</div>
+            <div class="email-item2-preview">Linear hiring surge, Figma removes Starter tier...</div>
+          </div>
+          <div class="email-item" style="border:1px solid rgba(255,255,255,0.04);">
+            <span class="email-item2-time">Fri</span>
+            <div class="email-item2-from">Stripe</div>
+            <div class="email-item2-subject">Payment received — €29.00</div>
+            <div class="email-item2-preview">Your Pro subscription is active</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Full alert email -->
+  <div class="email-full">
+    <div class="email-full-chrome">
+      <div class="email-full-header">
+        <div style="width:32px;height:32px;border-radius:8px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);display:flex;align-items:center;justify-content:center;font-size:14px;">⚡</div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:#fff;">alerts@getrival.eu</div>
+          <div style="font-size:10px;color:#52525b;">To: joe@yourstartup.com · 18:44</div>
+        </div>
+      </div>
+      <div class="email-full-body">
+        <div class="alert-badge">⚡ INSTANT ALERT</div>
+        <div class="alert-subject">Notion just changed their pricing</div>
+        <div class="alert-meta">Detected 18 minutes ago · Rival monitors 24/7</div>
+
+        <div class="alert-card">
+          <div class="alert-card-label">What changed</div>
+          <div class="alert-card-title">Plus plan raised €8 → €12/mo (+50%)</div>
+          <div class="alert-card-body">Free tier storage cut from 5MB to 2MB. This pricing move signals a deliberate push upmarket — <strong>Notion is pricing out individual users</strong> to accelerate team/enterprise adoption.</div>
+        </div>
+
+        <div style="background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.2);border-radius:12px;padding:14px;margin-bottom:16px;">
+          <div style="font-size:9px;font-weight:800;color:#10b981;letter-spacing:0.1em;margin-bottom:8px;">💡 CLAUDE RECOMMENDATION</div>
+          <div style="font-size:12px;color:#a1a1aa;line-height:1.65;"><strong style="color:#e4e4e7;">Act this week:</strong> Notion churned users are actively looking for alternatives. Run a targeted campaign toward Notion Free tier users with "Switch and get 3 months free" messaging.</div>
+        </div>
+
+        <div class="alert-cta">
+          <div class="alert-btn-primary">View full analysis →</div>
+          <div class="alert-btn-secondary">Dismiss alert</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

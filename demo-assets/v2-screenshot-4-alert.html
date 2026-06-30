@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-font-smoothing:antialiased; }
+  body { width:1280px; height:800px; background:#050507; font-family:'Inter',system-ui,sans-serif; overflow:hidden; color:#fafafa; display:flex; align-items:center; justify-content:center; gap:32px; padding:0 40px; }
+
+  .bg-grid { position:fixed; inset:0; background-image:linear-gradient(rgba(255,255,255,0.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.015) 1px,transparent 1px); background-size:64px 64px; pointer-events:none; }
+  .bg-glow-red { position:fixed; top:-80px; left:50%; transform:translateX(-50%); width:900px; height:500px; background:radial-gradient(ellipse,rgba(239,68,68,0.1) 0%,transparent 65%); pointer-events:none; }
+
+  /* ── HERO LABEL ── */
+  .hero-label { position:fixed; top:22px; left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:8px; font-size:12px; font-weight:700; padding:6px 16px; border-radius:99px; background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2); color:#ef4444; letter-spacing:0.05em; }
+  .blink { width:7px; height:7px; border-radius:50%; background:#ef4444; animation:blink 1.2s ease-in-out infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  /* ── SLACK PANEL ── */
+  .slack-panel { width:320px; flex-shrink:0; }
+  .slack-chrome { background:#1a1523; border:1px solid rgba(255,255,255,0.07); border-radius:16px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.5); }
+  .slack-title-bar { height:40px; background:#1a1523; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; align-items:center; padding:0 14px; gap:8px; }
+  .slack-channel-name { font-size:13px; font-weight:700; color:#fff; }
+  .slack-sidebar-hint { font-size:11px; color:#4a4460; }
+  .slack-msg-area { padding:16px 14px; }
+  .slack-day-divider { display:flex; align-items:center; gap:8px; margin-bottom:14px; }
+  .slack-day-line { flex:1; height:1px; background:rgba(255,255,255,0.06); }
+  .slack-day-text { font-size:10px; color:#4a4460; font-weight:600; }
+  .slack-msg { display:flex; gap:10px; }
+  .slack-av { width:32px; height:32px; border-radius:9px; background:linear-gradient(135deg,#10b981,#059669); display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; margin-top:2px; }
+  .slack-from { font-size:13px; font-weight:800; color:#fff; }
+  .slack-ts { font-size:11px; color:#4a4460; margin-left:6px; }
+  .slack-text { font-size:13px; color:#d1d1d1; line-height:1.6; margin-top:4px; }
+  .slack-text strong { color:#fff; }
+  .slack-text em { color:#818cf8; font-style:normal; }
+  .slack-block { margin-top:10px; background:rgba(255,255,255,0.04); border-left:3px solid #ef4444; border-radius:0 8px 8px 0; padding:10px 12px; }
+  .slack-block-label { font-size:10px; font-weight:700; color:#ef4444; letter-spacing:0.08em; margin-bottom:6px; text-transform:uppercase; }
+  .slack-block-text { font-size:12px; color:#a1a1aa; line-height:1.6; }
+  .slack-block-text strong { color:#e4e4e7; }
+  .slack-reaction { display:inline-flex; align-items:center; gap:4px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); border-radius:6px; padding:3px 8px; font-size:12px; margin-top:8px; color:#a1a1aa; }
+
+  /* ── PHONE ── */
+  .phone-wrap { flex-shrink:0; }
+  .phone { background:#141414; border-radius:40px; padding:12px; box-shadow:0 40px 120px rgba(0,0,0,0.8),inset 0 1px 0 rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.08); width:240px; }
+  .phone-notch { width:90px; height:24px; background:#141414; border:1px solid rgba(255,255,255,0.06); border-top:none; border-radius:0 0 14px 14px; margin:0 auto 10px; }
+  .phone-screen { background:#050507; border-radius:28px; overflow:hidden; }
+  .phone-status { height:28px; background:#050507; display:flex; align-items:center; padding:0 18px; justify-content:space-between; }
+  .phone-status span { font-size:11px; font-weight:700; color:#fff; }
+  /* notification */
+  .phone-notif { margin:8px 8px 0; background:#ef4444; border-radius:14px; padding:12px 14px; }
+  .pn-app { font-size:10px; font-weight:800; color:rgba(255,255,255,0.7); margin-bottom:2px; letter-spacing:0.08em; display:flex; align-items:center; gap:5px; }
+  .pn-title { font-size:12.5px; font-weight:800; color:#fff; margin-bottom:2px; line-height:1.3; }
+  .pn-body { font-size:11px; color:rgba(255,255,255,0.8); line-height:1.5; }
+  /* phone email list */
+  .phone-email-header { background:#050507; padding:12px 14px 6px; }
+  .phone-email-header-t { font-size:18px; font-weight:800; color:#fff; }
+  .phone-email-row { padding:12px 14px; border-bottom:1px solid rgba(255,255,255,0.05); }
+  .phone-email-row.unread { background:rgba(239,68,68,0.05); border-left:2.5px solid #ef4444; }
+  .per-from { font-size:11.5px; font-weight:700; color:#fff; margin-bottom:2px; }
+  .per-subj { font-size:12px; font-weight:600; color:#e4e4e7; margin-bottom:2px; }
+  .per-prev { font-size:11px; color:#52525b; }
+  .per-time { font-size:10px; color:#ef4444; font-weight:700; float:right; }
+  .per-time2 { font-size:10px; color:#27272a; float:right; }
+
+  /* ── EMAIL CARD ── */
+  .email-card { flex:1; max-width:440px; }
+  .email-chrome { background:#0b0b0e; border:1px solid rgba(239,68,68,0.25); border-radius:20px; overflow:hidden; box-shadow:0 0 60px rgba(239,68,68,0.08); }
+  .email-toolbar { height:44px; border-bottom:1px solid rgba(255,255,255,0.05); background:#080809; display:flex; align-items:center; padding:0 16px; gap:8px; }
+  .email-toolbar-btn { font-size:11px; color:#3f3f46; padding:4px 9px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:6px; }
+  .email-body { padding:22px; }
+  .alert-chip { display:inline-flex; align-items:center; gap:6px; font-size:10px; font-weight:800; padding:4px 12px; border-radius:99px; background:rgba(239,68,68,0.1); color:#ef4444; border:1px solid rgba(239,68,68,0.25); letter-spacing:0.08em; margin-bottom:14px; }
+  .alert-title { font-size:21px; font-weight:900; color:#fff; letter-spacing:-0.03em; line-height:1.2; margin-bottom:6px; }
+  .alert-meta { font-size:11.5px; color:#3f3f46; margin-bottom:18px; font-weight:500; }
+  .alert-what { background:rgba(239,68,68,0.04); border:1px solid rgba(239,68,68,0.18); border-radius:12px; padding:14px 16px; margin-bottom:12px; }
+  .alert-what-label { font-size:9.5px; font-weight:800; color:#ef4444; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:7px; }
+  .alert-what-title { font-size:14.5px; font-weight:800; color:#fff; margin-bottom:6px; letter-spacing:-0.01em; }
+  .alert-what-body { font-size:12px; color:#71717a; line-height:1.7; }
+  .alert-what-body strong { color:#a1a1aa; font-weight:600; }
+  .alert-rec { background:rgba(16,185,129,0.04); border:1px solid rgba(16,185,129,0.18); border-radius:12px; padding:14px 16px; margin-bottom:16px; }
+  .alert-rec-label { font-size:9.5px; font-weight:800; color:#10b981; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:7px; }
+  .alert-rec-body { font-size:12px; color:#a1a1aa; line-height:1.7; }
+  .alert-rec-body strong { color:#e4e4e7; font-weight:600; }
+  .alert-btns { display:flex; gap:10px; }
+  .alert-btn-p { flex:1; padding:11px; border-radius:10px; background:#ef4444; color:#fff; font-size:12.5px; font-weight:800; text-align:center; letter-spacing:-0.01em; }
+  .alert-btn-s { flex:1; padding:11px; border-radius:10px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); color:#52525b; font-size:12.5px; font-weight:600; text-align:center; }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-glow-red"></div>
+<div class="hero-label"><div class="blink"></div>INSTANT ALERT SYSTEM</div>
+
+<!-- SLACK -->
+<div class="slack-panel">
+  <div style="font-size:11px;font-weight:600;color:#52525b;text-align:center;margin-bottom:8px;letter-spacing:0.05em;">Slack · #competitor-intel</div>
+  <div class="slack-chrome">
+    <div class="slack-title-bar">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="14" height="14" rx="3" fill="#4a154b"/><text x="3" y="12" font-size="10" fill="white">S</text></svg>
+      <span class="slack-channel-name">#competitor-intel</span>
+    </div>
+    <div class="slack-msg-area">
+      <div class="slack-day-divider">
+        <div class="slack-day-line"></div>
+        <div class="slack-day-text">Today at 6:44 PM</div>
+        <div class="slack-day-line"></div>
+      </div>
+      <div class="slack-msg">
+        <div class="slack-av">⚡</div>
+        <div>
+          <div><span class="slack-from">Rival Bot</span><span class="slack-ts">6:44 PM</span></div>
+          <div class="slack-text">🚨 <strong>Instant Alert — Notion</strong><br>A high-priority competitor change was just detected.</div>
+          <div class="slack-block">
+            <div class="slack-block-label">⬆ Pricing Change Detected</div>
+            <div class="slack-block-text"><strong>Plus plan raised €8 → €12/mo (+50%)</strong><br>Free tier storage cut from 5MB to 2MB.<br><br>💡 <em>Recommendation: Target Notion Free tier users with "switch and save" campaign immediately.</em></div>
+          </div>
+          <div class="slack-reaction">💸 3</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PHONE -->
+<div class="phone-wrap">
+  <div style="font-size:11px;font-weight:600;color:#52525b;text-align:center;margin-bottom:8px;letter-spacing:0.05em;">Mobile push</div>
+  <div class="phone">
+    <div class="phone-notch"></div>
+    <div class="phone-screen">
+      <div class="phone-status"><span>6:44</span><span style="font-size:10px;">▌▌▌ 🔋</span></div>
+      <div class="phone-notif">
+        <div class="pn-app">⚡ RIVAL</div>
+        <div class="pn-title">Notion changed pricing</div>
+        <div class="pn-body">Plus plan +50%. Read full analysis →</div>
+      </div>
+      <div class="phone-email-header"><div class="phone-email-header-t">Inbox</div></div>
+      <div class="phone-email-row unread">
+        <span class="per-time">NOW</span>
+        <div class="per-from">⚡ alerts@getrival.eu</div>
+        <div class="per-subj">Notion pricing change alert</div>
+        <div class="per-prev">Plus raised 50%... see analysis</div>
+      </div>
+      <div class="phone-email-row">
+        <span class="per-time2">Mon</span>
+        <div style="font-size:11px;color:#52525b;">briefings@getrival.eu</div>
+        <div style="font-size:11px;color:#3f3f46;margin-top:1px;">Weekly briefing: 5 changes</div>
+      </div>
+      <div class="phone-email-row">
+        <span class="per-time2">Sat</span>
+        <div style="font-size:11px;color:#52525b;">Stripe</div>
+        <div style="font-size:11px;color:#3f3f46;margin-top:1px;">Payment received €29.00</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EMAIL CARD -->
+<div class="email-card">
+  <div style="font-size:11px;font-weight:600;color:#52525b;text-align:center;margin-bottom:8px;letter-spacing:0.05em;">Email alert</div>
+  <div class="email-chrome">
+    <div class="email-toolbar">
+      <div class="email-toolbar-btn">← Back</div>
+      <div class="email-toolbar-btn">Archive</div>
+      <div style="margin-left:auto;font-size:10px;color:#27272a;">alerts@getrival.eu</div>
+    </div>
+    <div class="email-body">
+      <div class="alert-chip"><div class="blink"></div>INSTANT ALERT</div>
+      <div class="alert-title">Notion just changed<br>their pricing</div>
+      <div class="alert-meta">Detected 18 min ago · Rival monitors 24/7</div>
+      <div class="alert-what">
+        <div class="alert-what-label">What changed</div>
+        <div class="alert-what-title">Plus plan raised €8 → €12/mo (+50%)</div>
+        <div class="alert-what-body">Free tier storage cut from 5MB to 2MB. <strong>Deliberate upmarket shift</strong> — pricing out individual users to push teams toward paid plans.</div>
+      </div>
+      <div class="alert-rec">
+        <div class="alert-rec-label">💡 Claude Recommendation</div>
+        <div class="alert-rec-body"><strong>Act this week:</strong> Notion churned users are searching for alternatives now. Run a targeted "Switch from Notion" campaign with 3-months-free messaging.</div>
+      </div>
+      <div class="alert-btns">
+        <div class="alert-btn-p">View full analysis →</div>
+        <div class="alert-btn-s">Dismiss alert</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
